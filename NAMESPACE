@@ -1,0 +1,7 @@
+useDynLib(mactivate, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+importFrom("stats", "glm", "binomial")
+S3method(predict, mactivate_fit_gradient_01)
+S3method(predict, mactivate_fit_gradient_logistic_01)
+S3method(predict, mactivate_fit_hybrid_01)
+

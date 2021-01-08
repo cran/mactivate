@@ -1,0 +1,405 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{caption}
+\usepackage{amsmath, amsthm} %%%%%%%%%%%%%%% MUST BE ADDED
+\usepackage{supertabular}
+\usepackage{wasysym}
+\usepackage{setspace}
+
+\usepackage{Sweave}
+
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\footnotesize\raggedright\arraybackslash}X}
+
+%\singlespacing
+\onehalfspacing
+%\doublespacing
+
+\usepackage{natbib}
+
+%\usepackage{color}
+%\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+%\definecolor{MyDarkRed}{rgb}{0.4,0.0,0.0} 
+%\usepackage[colorlinks=true, urlcolor= MyDarkGreen, linkcolor= MyDarkRed ]{hyperref}
+\usepackage{hyperref}
+
+\DeclareCaptionLabelSeparator{space}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+
+
+\newcommand{\ve}{\varepsilon}
+
+
+
+\newcommand{\wt}{\widetilde}
+\newcommand{\wh}{\widehat}
+\newcommand{\0}{\mathbf{0}}
+
+%\newcommand{\Fv}{\mathbf{F}}
+%\newcommand{\Lv}{\mathbf{L}}
+%\newcommand{\Ev}{\mathbf{E}}
+
+\newcommand{\st}{\mathrm{ \:\: s.t. \:\: }}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\bm}[1]{\mbox{\boldmath$#1$}}
+\newcommand{\mr}[1]{\mathrm{#1}}
+\newcommand{\mb}[1]{\mathbf{#1}}
+
+\newcommand{\smss}[1]{^{_{#1}}}
+
+\newcommand{\apri}{\smss{\,(-)}}
+\newcommand{\apos}{\smss{\,(+)}}
+
+\newcommand{\betaup}{\rotatebox[origin=c]{12}{$\beta$}}
+
+\newcommand{\ttb}{\hspace{-0.01cm}}
+
+\newcommand{\diag}{\mathsf{diag}}
+\newcommand{\minz}{\mathsf{min}}
+\newcommand{\maxz}{\mathsf{max}}
+\newcommand{\zsin}{\mathsf{sin}}
+\newcommand{\zcos}{\mathsf{cos}}
+
+\newcommand{\argmin}{\mathsf{argmin}}
+
+\newcommand{\SE}{\mathsf{SE}}
+\newcommand{\range}{\mathsf{range}}
+
+\newcommand{\ndxrng}[2]{#1 \,\!\! : \,\!\! #2}
+
+\newenvironment{DZcaption}[2]%
+               {\begin{list}{}{\leftmargin#1\rightmargin#2}\item{}}%
+               {\end{list}}
+
+
+
+\begin{document}
+
+%\VignetteIndexEntry{mactivate-about} %% this is like a shebang
+%\XVignetteDepends{mvtnorm} %% this is like a shebang
+%\XVignetteDepends{maps} %% this is like a shebang
+
+
+\title{Package \texttt{mactivate} \\ About}
+\author{Dave Zes}
+\maketitle
+
+
+\section{Introduction}
+
+
+
+We start by imagining a system,
+%
+%
+\begin{align} \label{eq:Sys}
+ Y_{i} = \mathrm{b}_{0} + \mb{x}_{i} \, \mb{b} + \varepsilon_{i} \,\, , \,\,\,\,  \varepsilon_{i} \sim \mathcal{N} [ 0, \Sigma ]
+\end{align}
+%
+Using data notation, we can write
+%
+\begin{align} \label{eq:model}
+%\mb{y}= \widehat{\mathrm{b}}_{0} + \mb{X} \, \widehat{\mb{b}} +  \bs{ \varepsilon }
+\mb{y}= {\mathrm{b}}_{0} + \mb{X} \, {\mb{b}} +  \bs{ \varepsilon }
+\end{align}
+%
+%where $\mb{y}$ is an $n \times 1$ column vector, $ \widehat{\mathrm{b}}_{0}$ is a scalar, $\mb{X}$ is our $n \times d$ matrix of inputs --- our ``design'' matrix; $\widehat{\mb{b}}$ is a $d \times 1$ column vector; and $\bs{ \varepsilon }$ is an $n \times 1$ column vector of observed system shocks, or errors.
+%
+where $\mb{y}$ is an $n \times 1$ column vector, $ {\mathrm{b}}_{0}$ is a scalar, $\mb{X}$ is our $n \times d$ matrix of inputs --- our ``design'' matrix; ${\mb{b}}$ is a $d \times 1$ column vector; and $\bs{ \varepsilon }$ is an $n \times 1$ column vector of observed system shocks, or errors.
+
+
+
+Let us further specify (\ref{eq:model}):
+%
+\begin{align} \label{eq:specmodel}
+%\mb{y}= \widehat{\mathrm{b}}_{0} + \mb{X} \, \widehat{\mb{b}} + \mb{X}^{\star} \, \widehat{\mb{c}}  +  \bs{ \varepsilon }
+\mb{y}= {\mathrm{b}}_{0} + \mb{X} \, {\mb{b}} + \mb{X}^{\star} \, {\mb{c}}  +  \bs{ \varepsilon }
+\end{align}
+%
+Here, our inputs, $\mb{X}$, and our responses, $\mb{y}$, are \emph{directly} observed.  Our $n \times m$ matrix $\mb{X}^{\star}$ contains interactions constructed from $\mb{X}$.  For example, the first column of $\mb{X}^{\star}$ might contain the three-term element-wise product of, say, columns 1, 2, and 17 of $\mb{X}$.
+
+Our goal, then, is to identify $\mb{X}^{\star}$ such that the true coefficient vector, $\mb{c}$, contains all non-zero elements.  Or, in the practical spirit of inferential prediction, to construct $\mb{X}^{\star}$ so that, $\widehat{y}_0 = \widehat{f}(x^{}_0, x^{\star}_0)$ will be as precise a predictor of $y_0$ as possible.
+
+This enterprise of identifying interaction terms falls broadly under ``model selection'' and more specifically under ``feature selection''.  When $d$, the number of columns of $\mb{X}$ is large, finding $\mb{X}^{\star}$ is traditionally non-trivial.  The matter is one of combinatorics.  The total number of possible first-or-greater-order interactions is $2^d - d$.
+
+
+In the simplest sense, activation layers in artificial neural networks (ANNs) are comprised of sibling \emph{units}.  The \emph{state} or value of a unit is some function of units' states or values in another layer.
+It could be said that multiplicative activation functions have been known, at least in concept, throughout the 6-or-so-decade history of ANNs in much the same way that one might say that arithmetic has been known throughout the history of mathematics.  This is so, if for no other reason, because when units' states are 0 or 1, i.e, $u \in \{0,1\}$, then combining units' values by multiplication serves as a boolean AND gate.
+However, the ANN literature is absolutely dominated by additive functions between units.  That is, a unit's value is modeled as some function of a weighted sum of other units's values.
+About 20 years ago, there was a bump in interest in multiplicative functions with the conjecture that some biological neurons actually possessed a ``multiplicative-like'' behavior \cite{schmitt2002complexity}.  For an example involving barn owls:  \cite{schnupp2001neural}.  Recently there has been murmurings of renewed interest within the ANN community. One compelling example couches the matter of detecting interactions much in language friendly to a more statistical audience \cite{tsang2017detecting} --- here the researchers uncover potential interactions by processing the weights (coefficients) of specially formulated linear units' input functions.  Alternately, towards the same end, \cite{jayakumar2019multiplicative} extend layers' modeling flexibility by extending the dimensionality of the weight tensor.
+
+
+For a more statistical audience, on the topic of detecting interaction effects, in their excellent book (\cite{FeatureEngineeringKuhnJohnson2019}), currently available for online viewing, Kuhn and Johnson point out that tree-based methods can be effective at identifying interaction effects (citations include 
+%\cite{elith2008working}; \cite{garcia2009evaluating}; \cite{lampa2014identification}
+\cite{elith2008working, garcia2009evaluating, lampa2014identification}).
+Trees's leafs are essentially bins in the input space, and so can naturally implicate non-linear relationships, including interactions.  The Additive Groves method \cite{sorokina2007additive} is something of a milestone for efficiency, flexibility, and model diagnoses.
+
+
+More germane to multivariate regression, textbook methods for identifying interactions include \emph{stepwise selection} and \emph{best subsets}.  There is a fairly substantial literature of clever multivariate regression extensions/adaptations, including \emph{backtracking} \cite{ShahInterations2016Backtracking}; \emph{backward dropping algorithm (BDA)} \cite{WangInteractionFeatureSelection2012}; \emph{VANISH} \cite{VANSIHJames2010}; \emph{Elastic Net}, \cite{zou2005regularization}; the \emph{Dantzig Selector}, especially suited when the input dimensionality is much greater than the number of observations \cite{candes2007dantzig}; \emph{iFOR}, \cite{hao2014interaction}. 
+These multivariate regression adaptations all possess the commonality that they \emph{discourage} model complexity during model parameterization, or fitting.  For example, both stepwise selection and best subsets utilize information criteria, which discourages complex model parameterizations by imposing a \emph{penalty} that is a function of the total number of proposed parameters.  Other methods discourage complexity by imposing a \emph{penalty} that is a function of the parameter estimates themselves.  It is important to point out that in addition to forwarding  a conceptual framework, much of the relevant literature provide technique, technical details concerning implementation.  For example, the LARS-EN algorithm for Elastic Net, and the iFORT and iFORM algorithms for iFOR, and, as the very title suggests, the \emph{Penalized Likelihood Maximization Algorithm}, \cite{fan2001variable}.
+
+Tree-based methods are extremely powerful and useful.  From a nuts-and-bolts perspective, attempting to provide a lucid interpretation as to why, for example, a fitted tree might implicate an interaction down two branches at two particular nodes at different points in the branches' hierarchy, or, in the case of fitting multiple trees, as with random forests, why one fitted tree may implicate some interaction whereas another doesn't, can be challenging --- especially when the input dimensionality is large.
+
+Most all the MLR adaptations suited for detecting interactions possess another commonality:  They require either full model specification upfront, e.g., the Dantzig Selector, or at least enumeration of candidate interaction terms.
+Our method under present consideration, m-activation, requires neither.
+
+
+
+
+
+\section{Method}
+
+%Our method, \emph{m-activation}, was inspired by dense activation layers in neural nets.  Since activation layers are famously linear in terms of combining \emph{units}, our present name ``multiplicative-activation'' may be something of an oxymoron.  Anyway, this method is directly understood by understanding a single ``activation'' function, $g$.
+
+Our method, \emph{m-activation}, is inspired by dense activation layers in neural nets.  This method is directly understood by understanding a single ``activation'' function, $g$.
+%
+%
+\begin{align}
+\mb{X}^{*} = g \left( \mb{X} \, ; \, \mb{W} \right)
+\end{align}
+%
+where $\mb{X}^{*}$ and $\mb{X}$ are the familiar input matrices from above, and $\mb{W}$ is a $d \times m$ matrix.  
+%For reasons that will be clear, the elements of $\mb{W}$ are constrained to reside in the unit interval.  
+Specifically,
+%
+%
+%\begin{align} \label{eq:Wmx}
+%\mb{X}^{*}_{[i, k]} = \prod_{j=1}^d  \left( \, \mb{X}_{[i, j]} \,   \mb{W}_{[j, k]} + 1 - \mb{W}_{[j, k]}  \right)
+%\end{align}
+%
+%
+\begin{align} \label{eq:W}
+\mathrm{x}^{*}_{i, k} 
+= g(\mathrm{x}_{i, j} ; \mathrm{w}_{j, k})
+=\prod_{j=1}^d  \left( \, \mathrm{x}_{i, j} \,   \mathrm{w}_{j, k} + 1 - \mathrm{w}_{j, k}  \right)
+\end{align}
+%
+where, notationally, $\mathrm{x}_{i, j}$ refers to the value at row $i$ and column $j$ of $\mb{X}$. 
+
+For example, looking at (\ref{eq:W}), suppose the $k$-th column of $\mb{W}$ contains entirely zeroes.  Then every element in the $k$-th column of $\mb{X}^{*}$ will contain 1 --- i.e., unit value.  If, at the other extreme, the $k$-th column of $\mb{W}$ contains entirely ones,  then every element in the $k$-th column of $\mb{X}^{*}$ will contain the grand product of the respective row entries of $\mb{X}$ --- i.e., the \emph{full} interaction.
+
+
+\subsection{Locating $\mb{W}$}
+
+For some user-selected $m$, our task is to locate (or \emph{estimate}) $\mb{W}$.
+
+
+\subsubsection{Uniqueness}
+
+The notion of uniqueness arises in linear solutions as methods for actually solving systems given data involve algebraic linear operations that are sensitive to parameter uniqueness.  It could and should be noted that uniqueness is neither necessary, nor, even, sufficient to assure a tractable solution.
+
+The model representation (\ref{eq:specmodel}) does not necessarily possess a unique parameterization.  As an example, suppose the first column of $\mb{W}$ contains a 1 at the first row, and zeroes otherwise.  
+Then $\bm{x}_1$ (an $n \times 1$ column vector), would be equal to the $n \times 1$ column vector $ \bm{x}^{\star}_1$ --- the two vectors, $\mathrm{b}_1 \bm{x}_1$ and $\mathrm{c}^{}_1 \bm{x}^{\star}_1$ would be perfectly co-linear.
+
+
+To better understand $\mb{W}$ and its ultimate role in our solution, let us briefly consider another simple specific example.  Suppose the first column of $\mb{W}$ is % as given in (\ref{eq:uniqueExample}).
+%
+\begin{align} \label{eq:uniqueExample}
+\mb{w}_{ \cdot , 1} = (0.5, 1, 1, 0, 0, 0)^{T}
+\end{align}
+%
+
+The first column of $\mb{X}^{*}$ would then contain
+%
+\begin{align} \label{eq:uniqueExample}
+\mb{x}^{*}_{ \,\, \cdot ,1}
+= \tfrac{1}{2} \, \mathrm{c}_1 \, ( \mathrm{x}_1 \, \mathrm{x}_2 \, \mathrm{x}_3 + \mathrm{x}_1 \, \mathrm{x}_2 ) 
+= \tfrac{1}{2} \, \mathrm{c}_1 \, ( \mathrm{x}_1 \, \mathrm{x}_2 \, \mathrm{x}_3 )  + \tfrac{1}{2} \, \mathrm{c}_1 \, ( \mathrm{x}_1 \, \mathrm{x}_2 )
+% c1*x1*x2*(0.500000000000000*x3 + 0.500000000000000)
+\end{align}
+%
+% The big message here is that v
+
+Values in $\mb{W}$ that are not equal to zero or one implicate a polynomial term(s) in  $\mb{X}^{*}$.  While $\mb{x}^{*}_{ \,\, \cdot ,1}$ from our example is additive --- the sum of a second order interaction (between $\mathrm{x}_1 , \, \mathrm{x}_2 , \, \mathrm{x}_3$) and a first order interaction (between $\mathrm{x}_1 , \, \mathrm{x}_2$) --- the individual contributions of these two terms are tied by the commonality of their shared coefficient, $\mathrm{c}_1$.  
+
+
+
+\subsubsection{Polynomial Space}
+
+When each element of $\mb{W}$ is in $\{0, 1\}$, the class of polynomials defined by $\mb{X}^{*} \mb{c}$ created from (\ref{eq:W}) includes only the class of polynomials of unshifted inputs --- (\ref{eq:uniqueExample}) serves an example.  The more realistic and practical setting is one in which our polynomial effects arise from shifted inputs, for example, $\mathrm{c}_1 \, ( \mathrm{x}_1 - a_1 ) \, ( \mathrm{x}_2 - a_2 )$.
+
+The key insight here is that, inasmuch as nature might on rare occasion materialize data where our response just so happens to be solely driven by interactions of unshifted inputs (where we can ideally imagine the contents of $\mb{W}$ to be in $\{0, 1\}$), thinking more broadly we can easily allow the elements $\mb{W}$ to reside in $[0,1]$.  Or, more broadly still, we may allow the elements $\mb{W}$ to reside in $\mathbb{R}$.
+
+In this way, the \emph{dual personality} of m-activation is revealed.  In the former case, when $\mb{W}$ is an indicator, it serves as a hard-and-fast object for messaging interactions in $\mb{X}$; in the latter cases, $\mb{W}$ becomes another parameter, and the behavior of m-activation is much more akin to a neural net layer.
+
+
+\subsection{Exploration \& Confirmation}
+
+No matter what the actual values of $\mb{W}$, ultimately $\mb{X}^{*}$ is a column-wise collection of inputs --- just like $\mb{X}$.  While the process of locating $\mb{W}$  is clearly a matter of model ``fitting'', it also possesses a spirit of EDA as such a process is essentially searching over the data trying to explain our response, $\mb{y}$.
+However, given some estimate of $\mb{W}$ --- call it $\widehat{\mb{W}}$ --- all the familiar tools of confirmatory analysis are available to us.  
+For example, considering our original system (\ref{eq:specmodel}), if our goal is to minimize our response sum of square errors, then, for $\mb{X}^{*} = g \left( \mb{X} \, ; \, \widehat{\mb{W}} \right)$, everything reduces to simple multivariate regression where our design matrix, $\bs{\Xi}$, is constructed
+%
+\begin{align} \label{eq:model2}
+\bs{\Xi} = [ \mb{1}, \mb{X}, \mb{X}^{*} ]
+\end{align}
+%
+%
+bringing with it the usual luxury of confirmatory indicators, $t$-stats, Information Criteria, diagnostics, etc. --- and very importantly, additional exploratory extensions such as \emph{regularization}.
+
+
+\subsection{Statistical Learning}
+
+Quite simply, our lone fitting hyper-parameter is $m$ --- the number of columns in $\widehat{\mb{W}}$ and $\mb{X}^{*}$.  Fortuitously, since it seems locating $\mb{W}$ is best done sequentially one column after the next, resampling methods such as $k$-fold CV are efficient, as there is no need to re-locate $\mb{W}$ for each possible value of $m$.  For example, suppose $\widehat{\mb{W}}_{\mathrm{fold-1}}^{m=1}$ is our estimate when testing for $m=1$ (and therefore has one column), for CV fold 1.  Then we may simply append a column to it and use it for fold-1 to test $m=2$ (perhaps holding the first column fixed while fitting the values of the second column).  And so on for $m=3,4,5,...$.
+
+Since $\mb{X}$ is fixed, and $\mb{X}^{*}$ is a function of $\mb{X}$, the importance of the consequence of (\ref{eq:model2}) can be emphasized by noting that in a descriptive setting, the quality of a candidate fit is uniquely and solely determined by $\widehat{\mb{W}}$; in an inferential setting, our ``linear'' solution is amenable to the usual extensions, such as regularization.
+
+
+
+\if{false}
+\subsection{Fitting}
+
+We have tested some fairly generic fitting schemes on simulated datasets of various sizes.
+%What sorts of algorithms can we use to successfully locate our parameters, $\Pi = \{b_0, \mb{b}, \mb{c}, \mb{W} \}$ ?
+
+%\begin{itemize}[label=\ding{84}]
+\begin{itemize}
+\item Metaheuristics.  A particular flavor of Metaheuristic stochastic search (MSS) that the author has used in other research, and will not be detailed in this paper, works reliably, but is slow.
+\item First-Order Descent (Gradient Descent).  Works reliably, but is slow.  Requires careful control of step size.
+%\item Second-Order Descent (Newton's Method).  Mixed results.
+\item Hybrid First-Order Descent \& Maximization.  By far the most promising.  Relatively fast and reliable.
+\end{itemize}
+
+%\ding{212}
+\fi
+
+
+
+
+
+%\bibliographystyle{plainnat}
+
+%\bibliographystyle{jes}
+
+\bibliographystyle{abbrv}
+
+\bibliography{mactivation_about_01}
+
+
+
+
+
+
+
+\newpage
+
+\section{Appendix}
+
+\subsubsection{Metaheuristics}
+
+Metaheuristic stochastic search (MSS) is often slow, and commonly regarded as inelegant.  I'd be surprised if, over the last 50 years, anyone attained any acclaim over an MSS implementation.  However, there is a certain poetry to MSS.  First, it \emph{works}.  MSS happily dances around iteratively over the parameter space in a semi-directed fashion, constantly testing tries against the objective function, sidling towards the best and away from the worst.
+Not surprisingly --- at least to the author --- so too in our present setting.  Working with simulated examples both large and small, MSS happily located our model parameters.
+The real charm of MSS is that it is completely indifferent to \emph{properties} the objective function --- it only requires the objective function itself.  There's no need to calculate any derivatives, posterior distributions, or the like, which may be why it is often ignored by hardened academicians.
+
+Another nice property of MSS is that the search is amenable to asynchronous iteration and hence parallelization. 
+MSS does possess drawbacks.  Most notoriously, it's slow.  Moreover, MSS comes in many variants, and its success on a particular model can be highly dependent on the particular variant applied and tuning parameters such as search radius, sequence or order of model parameters over which to search, stopping rules, and the like.
+
+
+
+\subsubsection{First-Order Descent}
+
+Again, working with a number simulated examples both large and small, recursive first-order descent,
+%
+\begin{align} \label{eq:FOD}
+\bs{\theta}^{+} = \bs{\theta} - a \,\, \frac{ \partial f }{ \partial \bs{\theta}}
+\end{align}
+%
+where $f$ is our objective function, and $a$ is our step size, reliably located our parameters.  This method is sensitive to the step size, $a$.
+
+
+ \subsubsection{Hybrid}
+
+Each recursive step comprises two distinct parts.  The first, estimate $\mathrm{b}_0$ and $\mb{b}$.  Then estimate $\mb{c}$ and $\mb{W}$.
+
+For the sake of notational simplicity, let's have $\mb{b}$ include $\mathrm{b}_0$, $\mb{X}_{\mathrm{int}}$ respectively include a column of 1s.
+%
+\begin{align} \label{eq:algorithm}
+& {}^{(i)} \mb{X}^{*} = g( \mb{X}, {}^{(i)} \mb{W} ) \\
+& {}^{(i)} \mb{y}_{\mathrm{nocw}} = {}^{(i)} \mb{X}^{*} \,\, {}^{(i)} \mb{c} \\
+%
+& {}^{(i)} \mb{e}_{\mathrm{nocw}} = \mb{y} - {}^{(i)} \mb{y}_{\mathrm{nocw}} \\
+%
+%&  {}^{(i)} \mb{b} = \underset{\mb{b}}{\argmin} \left\{ \,  {}^{(i)} \mb{e}_{\mathrm{nocw}}^{2}  \, \right\}   \hspace{1cm}  \mbox{ (Least Squares Solution) } \\
+&  {}^{(i)} \mb{b} = \underset{{}^{(i)} \mb{b}}{\argmin} \left\{ \,  \big\lVert {}^{(i)} \mb{e}_{\mathrm{nocw}} -  \mb{X}_{\mathrm{int}} \, {}^{(i)} \mb{b} \, \big\rVert \, \right\}   \hspace{1cm}  \mbox{ (Least Squares Solution) } \\
+&  {}^{(i)} \widehat{\mb{y}}_{\mb{b}} =   \mb{X}_{\mathrm{int}} \, {}^{(i)} \mb{b} \\
+& ----------- \\
+& {}^{(i)} \mb{e}_{\mathrm{nob}} = \mb{y} -     {}^{(i)} \widehat{\mb{y}}_{\mb{b}}\\
+%&  {}^{(i)} \mb{c} \, , \,  {}^{(i)} \mb{W} = \underset{\mb{c} \, , \, \mb{W}}{\argmin} \left\{ \, \left( {}^{(i)} \mb{e}_{\mathrm{nob}}^{2} \right)^2 \, \right\}   \hspace{1cm}  \mbox{ (Gradient Descent) } 
+&  {}^{(i)} \mb{c} \, , \,  {}^{(i)} \mb{W} = \underset{ {}^{(i)} \mb{c} \, , \, {}^{(i)} \mb{W}}{\argmin} \left\{ \,  \big\lVert {}^{(i)} \mb{e}_{\mathrm{nob}}^{2}      -    {}^{(i)} \mb{X}^{*} \,\, {}^{(i)} \mb{c} \,  \big\rVert \, \right\}   \hspace{1cm}  \mbox{ (Gradient Descent) } 
+%
+\end{align}
+%
+
+
+
+
+
+
+ \end{document}
+
+
+
+
+
+
+
+\begin{align}
+&( \mbox{ We know } \xv_t \: \: )    \nonumber \\[0.1in]
+\betav_{t} &= \Lxx_{\: t-1}^{-1}  \: \:  \lxy_{\: t-1}   \label{eq:beta}      \\[0.1in]
+\wh{y}_t &=  \xv_t  \: \: \betav_{t}   \label{eq:yhat}       \\[0.1in]
+&( \mbox{ Event, $y_t$, Occurs } )   \nonumber  \\[0.1in]
+\ve_t^2 &= ( y_t - \wh{y}_t )^2    \label{eq:error}       \\[0.1in]
+&( \mbox{ Calculate gain, } \Kv, \kv \: \: )   \nonumber  \\[0.1in]
+\Lxx_{\: t} &= \Lxx_{\: t-1}    +  \Kv  \cdot  \left(  \xv_t^T \xv_t  - \Lxx_{\: t-1}  \right)     \label{eq:Lxx}         \\[0.1in]
+\lxy_{\: t} &= \lxy_{\: t-1}    +  \kv  \cdot  \left(  \xv_t^T y_t  - \lxy_{\: t-1}  \right)    \label{eq:Lxy}     
+\end{align}
+
+
+
+
+
+
+
+
+What we've done so far is discuss a tool for estimating a longitudinal variable.  Statisticians are more enchanted by problems involving the correlation between two or more variables.  Consider the classic linear regression setup, but here, in a longitudinal framework:
+%
+%
+\begin{align} \label{eq:LS}
+y_t &=  \xv_t \betav_t   + \vev_t
+\end{align}
+%
+%
+%To be in a familiar setting, we must change notation. From here on out: $\xv$, a $1 \times d$ row vector is not a latent state; it's just a row of data, a vector of regressors for $y$.
+
+Notice the similarity between (\ref{eq:LS}) and (\ref{eq:obs}), reprinted here:
+%
+%
+\begin{align*} 
+y_t =  \xv_t \betav_t   + \vev_t \:,  \hspace{0.5in}
+\yv_t =  \Hv \xv_t   + \nuv_t
+\end{align*}
+%
+
+
+
+
+
+
+
+
