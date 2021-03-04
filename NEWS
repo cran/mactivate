@@ -1,0 +1,7 @@
+
+New in 0.6.5:
+(from 0.6.4)
+1) Argument "antifreeze" added to function f_control_mactivate(), used by f_fit_hybrid_01() only.  Default, FALSE, duplicates behavior of 0.6.4.  Occasionally, especially with heavy collinearity in the design matrix, X, the Hybrid fitting function will not converge, and hence, not exit.  This can be remedied by setting antifreeze=TRUE.
+2) Substantial speed increase in all 3 fitting functions,  f_fit_gradient_01(), f_fit_hybrid_01(), f_fit_gradient_logistic_01().  The previous implementations (0.6.4) completely recalculated Xstar on each recursion, even if step update only affected values in a single column of Xstar.  Now only column(s) affected by update are recalculated.
+
+

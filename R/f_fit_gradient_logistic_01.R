@@ -39,6 +39,7 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
     }
     icc <- rep(0, 1)
     iW <- matrix(w0_seed, du, 1)
+    iXstar <- matrix(0, N, 1)
     iim <- 1
     m_start <- 1
     for (iim in m_start:m_tot) {
@@ -46,6 +47,9 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
             iW0 <- matrix(w0_seed, du, iim)
             iW0[, 1:(iim - 1)] <- iW[, 1:(iim - 1)]
             iW <- iW0
+            iXstar0 <- matrix(0, N, iim)
+            iXstar0[, 1:(iim - 1)] <- iXstar[, 1:(iim - 1)]
+            iXstar <- iXstar0
             icc0 <- rep(0, iim)
             icc0[1:(iim - 1)] <- icc[1:(iim - 1)]
             icc <- icc0
@@ -71,7 +75,13 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
             kk_i <- 0
             while (xbool_keep_going) {
                 xdeltaCO <- xdeltaCO * xescape_rate
-                iXstar <- f_mactivate(U = U, W = iW)
+                if (xbool_fix_w_use) {
+                  iXstar[, iim] <- f_mactivate(U = U, W = iW[, 
+                    iim, drop = FALSE])
+                }
+                else {
+                  iXstar <- f_mactivate(U = U, W = iW)
+                }
                 iyhat <- ib0 + X %*% ibb + iXstar %*% icc
                 e_niyhat <- exp(-iyhat)
                 df_dyhat <- -y * e_niyhat/(e_niyhat + 1) + (y - 
@@ -88,8 +98,15 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
                 df_dbb
                 df_dcc <- as.vector(2 * t(df_dyhat) %*% iXstar/N)
                 df_dcc
-                df_dW <- f_dmss_dW(U = U, Xstar = iXstar, W = iW, 
-                  yerrs = df_dyhat, cc = icc)/N
+                if (xbool_fix_w_use) {
+                  df_dW <- f_dmss_dW(U = U, Xstar = iXstar[, 
+                    iim, drop = FALSE], W = iW[, iim, drop = FALSE], 
+                    yerrs = df_dyhat, cc = icc[iim])/N
+                }
+                else {
+                  df_dW <- f_dmss_dW(U = U, Xstar = iXstar, W = iW, 
+                    yerrs = df_dyhat, cc = icc)/N
+                }
                 ib0p <- ib0
                 ibbp <- ibb
                 iccp <- icc
@@ -100,7 +117,7 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
                   ibb <- ibb - xstep_size_use * df_dbb
                   if (xbool_fix_w_use) {
                     iW[, iim] <- iW[, iim] - xstep_size_use * 
-                      df_dW[, iim] * xWadj
+                      df_dW * xWadj
                     icc[iim] <- icc[iim] - xstep_size_use * df_dcc[iim]
                   }
                   else {
@@ -111,7 +128,13 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
                     iW[iW < 0] <- 0
                     iW[iW > 1] <- 1
                   }
-                  iXstar <- f_mactivate(U = U, W = iW)
+                  if (xbool_fix_w_use) {
+                    iXstar[, iim] <- f_mactivate(U = U, W = iW[, 
+                      iim, drop = FALSE])
+                  }
+                  else {
+                    iXstar <- f_mactivate(U = U, W = iW)
+                  }
                   iyhat <- ib0 + X %*% ibb + iXstar %*% icc
                   iphat <- 1/(exp(-iyhat) + 1)
                   post_ierrs <- numeric(length(iphat))

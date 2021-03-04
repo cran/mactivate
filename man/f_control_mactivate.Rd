@@ -15,6 +15,7 @@ w0_seed = 0.1,
 max_internal_iter = 500, 
 w_col_search = "one", 
 bool_headStart = FALSE, 
+antifreeze = FALSE, 
 ss_stop = 10^(-8), 
 escape_rate = 1.004, 
 step_size = 1/100, 
@@ -42,6 +43,9 @@ Scalar character.  When \code{one}, locating \code{W} and corresponding coeffici
 }
   \item{bool_headStart}{
 Scalar logical. \bold{Gradient only}. When \code{TRUE}, fitting first locates initial primary effects as a ``head start'' to the subsequent gradient fitting.
+}
+  \item{antifreeze}{
+Scalar logical. \bold{Hybrid only}. New w/v0.6.5.  When \code{FALSE}, backwards compatible.  When \code{TRUE}, prevents hanging (non-convergence) that may rarely occur when input space is highly correlated.
 }
   \item{ss_stop}{
 Small positive scalar numeric.  Convergence tolerance.
