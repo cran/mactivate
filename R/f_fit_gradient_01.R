@@ -27,7 +27,7 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
     Xint <- cbind(int = rep(1, N), X)
     tXintXint <- crossprod(Xint)
     tXintXint <- tXintXint + diag(xreg * diag(tXintXint), ncol(tXintXint))
-    bhatX <- as.vector(solve(tXintXint) %*% (t(Xint) %*% y))
+    bhatX <- as.vector(solve(tXintXint, crossprod(Xint, y)))
     bhatX <- unname(bhatX)
     bhatX[is.na(bhatX)] <- 0
     xls_out[[1]] <- list(What = matrix(0, d, 0), cchat = numeric(0), 
@@ -89,9 +89,9 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
                 ierrs <- iyhat - y
                 df_db0 <- as.vector(2 * sum(ierrs)/N)
                 df_db0
-                df_dbb <- as.vector(2 * t(ierrs) %*% X/N)
+                df_dbb <- as.vector(2 * crossprod(ierrs, X)/N)
                 df_dbb
-                df_dcc <- as.vector(2 * t(ierrs) %*% iXstar/N)
+                df_dcc <- as.vector(2 * crossprod(ierrs, iXstar)/N)
                 df_dcc
                 if (xbool_fix_w_use) {
                   df_dW <- f_dmss_dW(U = U, Xstar = iXstar[, 
@@ -172,6 +172,6 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
         xls_out[[iim + 1]] <- list(What = iW, cchat = icc, b0hat = ib0, 
             bbhat = ibb)
     }
-    class(xls_out) <- c(class(xls_out), "mactivate_fit_gradient_01")
+    class(xls_out) <- c("mactivate_fit_gradient_01", class(xls_out))
     return(xls_out)
 }

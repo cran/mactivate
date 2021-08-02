@@ -104,7 +104,8 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
                   xdeltaCO <- xdeltaCO * xescape_rate
                   y_nob_hat <- iXstar %*% icc
                   iyw_errs <- y_nob_hat - y_nob
-                  df_dcc <- as.vector(2 * t(iyw_errs) %*% iXstar/N)
+                  df_dcc <- as.vector(2 * crossprod(iyw_errs, 
+                    iXstar)/N)
                   df_dcc
                   if (xbool_fix_w_use) {
                     df_dW <- f_dmss_dW(U = U, Xstar = iXstar[, 
@@ -190,6 +191,6 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
         }
         xls_out[[iim + 1]] <- list(What = iW, cchat = icc, bbhat = bhats)
     }
-    class(xls_out) <- c(class(xls_out), "mactivate_fit_hybrid_01")
+    class(xls_out) <- c("mactivate_fit_hybrid_01", class(xls_out))
     return(xls_out)
 }

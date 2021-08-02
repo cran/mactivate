@@ -94,9 +94,9 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
                 ierrs[y == 1] <- -2 * log(iphat[y == 1])
                 df_db0 <- as.vector(2 * sum(df_dyhat)/N)
                 df_db0
-                df_dbb <- as.vector(2 * t(df_dyhat) %*% X/N)
+                df_dbb <- as.vector(2 * crossprod(df_dyhat, X)/N)
                 df_dbb
-                df_dcc <- as.vector(2 * t(df_dyhat) %*% iXstar/N)
+                df_dcc <- as.vector(2 * crossprod(df_dyhat, iXstar)/N)
                 df_dcc
                 if (xbool_fix_w_use) {
                   df_dW <- f_dmss_dW(U = U, Xstar = iXstar[, 
@@ -181,6 +181,7 @@ function (X, y, m_tot, U = NULL, m_start = 1, mact_control = f_control_mactivate
         xls_out[[iim + 1]] <- list(What = iW, cchat = icc, b0hat = ib0, 
             bbhat = ibb)
     }
-    class(xls_out) <- c(class(xls_out), "mactivate_fit_gradient_logistic_01")
+    class(xls_out) <- c("mactivate_fit_gradient_logistic_01", 
+        class(xls_out))
     return(xls_out)
 }

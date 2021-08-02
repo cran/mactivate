@@ -1,3 +1,7 @@
+New in 0.6.6:
+(from 0.6.5)
+1) Fixed error when using predict() fun extensions for this package.  The issue was misassignment of class definitions of fit functions' return object.
+
 
 New in 0.6.5:
 (from 0.6.4)
